@@ -12,21 +12,22 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 
 public class RecipeEditorActivity extends AppCompatActivity {
-    private Recipe recipe;
-    private EditText titleEditText;
-    private EditText productEditText;
-    private EditText stepEditText;
-    private Button addProductButton;
-    private Button addStepButton;
-    private Button saveChangesButton;
-    private LinearLayout productContainer;
-    private LinearLayout stepContainer;
+    private Recipe recipe; // Aktualnie edytowany przepis
+    private EditText titleEditText; // Pole edycji tytułu przepisu
+    private EditText productEditText; // Pole edycji produktu
+    private EditText stepEditText; // Pole edycji kroku
+    private Button addProductButton; // Przycisk dodawania produktu
+    private Button addStepButton; // Przycisk dodawania kroku
+    private Button saveChangesButton; // Przycisk zapisywania zmian
+    private LinearLayout productContainer; // Kontener na wyświetlanie produktów
+    private LinearLayout stepContainer; // Kontener na wyświetlanie kroków
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_editor);
 
+        // Inicjalizacja elementów interfejsu użytkownika
         titleEditText = findViewById(R.id.title_edit_text);
         productEditText = findViewById(R.id.product_edit_text);
         stepEditText = findViewById(R.id.step_edit_text);
@@ -36,7 +37,9 @@ public class RecipeEditorActivity extends AppCompatActivity {
         productContainer = findViewById(R.id.product_container);
         stepContainer = findViewById(R.id.step_container);
 
+        // Pobranie przepisu do edycji z danych przekazanych z poprzedniej aktywności
         recipe = getIntent().getParcelableExtra("recipe");
+
         if (recipe != null) {
             titleEditText.setText(recipe.getTitle());
             displayProducts();
@@ -80,8 +83,10 @@ public class RecipeEditorActivity extends AppCompatActivity {
         });
     }
 
+    // Wyświetlanie produktów w interfejsie
     private void displayProducts() {
         productContainer.removeAllViews();
+
         for (final String product : recipe.getProducts()) {
             final View productItem = getLayoutInflater().inflate(R.layout.item_recipe_editor, null);
             EditText productEditText = productItem.findViewById(R.id.edit_text_item);
@@ -100,8 +105,10 @@ public class RecipeEditorActivity extends AppCompatActivity {
         }
     }
 
+    // Wyświetlanie kroków w interfejsie
     private void displaySteps() {
         stepContainer.removeAllViews();
+
         for (final String step : recipe.getSteps()) {
             final View stepItem = getLayoutInflater().inflate(R.layout.item_recipe_editor, null);
             EditText stepEditText = stepItem.findViewById(R.id.edit_text_item);
@@ -120,6 +127,7 @@ public class RecipeEditorActivity extends AppCompatActivity {
         }
     }
 
+    // Zapisywanie zmian przepisu
     private void saveRecipeChanges(Recipe recipe) {
         SharedPreferences sharedPrefs = getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPrefs.edit();

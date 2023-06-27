@@ -11,20 +11,21 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 
 public class RecipeCreatorActivity extends AppCompatActivity {
-    private ArrayList<String> products;
-    private ArrayList<String> steps;
-    private EditText titleEditText;
-    private EditText productEditText;
-    private EditText stepEditText;
-    private Button addProductButton;
-    private Button addStepButton;
-    private Button saveRecipeButton;
+    private ArrayList<String> products; // Lista do przechowywania produktów
+    private ArrayList<String> steps; // Lista do przechowywania kroków
+    private EditText titleEditText; // Pole tekstowe do wprowadzania tytułu przepisu
+    private EditText productEditText; // Pole tekstowe do wprowadzania produktu
+    private EditText stepEditText; // Pole tekstowe do wprowadzania kroku
+    private Button addProductButton; // Przycisk do dodawania produktu
+    private Button addStepButton; // Przycisk do dodawania kroku
+    private Button saveRecipeButton; // Przycisk do zapisywania przepisu
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_creator);
 
+        // Inicjalizacja pól tekstowych i przycisków
         titleEditText = findViewById(R.id.title_edit_text);
         productEditText = findViewById(R.id.product_edit_text);
         stepEditText = findViewById(R.id.step_edit_text);
@@ -32,16 +33,17 @@ public class RecipeCreatorActivity extends AppCompatActivity {
         addStepButton = findViewById(R.id.add_step_button);
         saveRecipeButton = findViewById(R.id.save_recipe_button);
 
+        // Inicjalizacja list
         products = new ArrayList<>();
         steps = new ArrayList<>();
 
         addProductButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String product = productEditText.getText().toString();
-                if (!product.isEmpty()) {
-                    products.add(product);
-                    productEditText.setText("");
+                String product = productEditText.getText().toString(); // Pobranie tekstu z pola tekstowego produktu
+                if (!product.isEmpty()) { // Sprawdzenie, czy produkt nie jest pusty
+                    products.add(product); // Dodanie produktu do listy produktów
+                    productEditText.setText(""); // Wyczyszczenie pola tekstowego produktu
                 }
             }
         });
@@ -49,10 +51,10 @@ public class RecipeCreatorActivity extends AppCompatActivity {
         addStepButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String step = stepEditText.getText().toString();
-                if (!step.isEmpty()) {
-                    steps.add(step);
-                    stepEditText.setText("");
+                String step = stepEditText.getText().toString(); // Pobranie tekstu z pola tekstowego kroku
+                if (!step.isEmpty()) { // Sprawdzenie, czy krok nie jest pusty
+                    steps.add(step); // Dodanie kroku do listy kroków
+                    stepEditText.setText(""); // Wyczyszczenie pola tekstowego kroku
                 }
             }
         });
@@ -60,26 +62,27 @@ public class RecipeCreatorActivity extends AppCompatActivity {
         saveRecipeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String title = titleEditText.getText().toString();
-                if (!title.isEmpty() && !products.isEmpty() && !steps.isEmpty()) {
-                    Recipe recipe = new Recipe(title, products, steps);
-                    saveRecipe(recipe);
-                    finish();
+                String title = titleEditText.getText().toString(); // Pobranie tekstu z pola tekstowego tytułu
+                if (!title.isEmpty() && !products.isEmpty() && !steps.isEmpty()) { // Sprawdzenie, czy tytuł, produkty i kroki nie są puste
+                    Recipe recipe = new Recipe(title, products, steps); // Utworzenie nowego obiektu Recipe z podanym tytułem, produktami i krokami
+                    saveRecipe(recipe); // Zapisanie przepisu
+                    finish(); // Zakończenie aktywności
                 }
             }
         });
     }
 
+    // Metoda do zapisywania przepisu w SharedPreferences
     private void saveRecipe(Recipe recipe) {
-        SharedPreferences sharedPrefs = getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPrefs.edit();
+        SharedPreferences sharedPrefs = getSharedPreferences(MainActivity.PREFS_NAME, Context.MODE_PRIVATE); // Pobranie obiektu SharedPreferences
+        SharedPreferences.Editor editor = sharedPrefs.edit(); // Pobranie edytora SharedPreferences
 
-        ArrayList<Recipe> savedRecipes = MainActivity.loadRecipesFromPreferences(this);
-        savedRecipes.add(recipe);
+        ArrayList<Recipe> savedRecipes = MainActivity.loadRecipesFromPreferences(this); // Wczytanie wcześniej zapisanych przepisów z SharedPreferences
+        savedRecipes.add(recipe); // Dodanie nowego przepisu do listy zapisanych przepisów
 
-        Gson gson = new Gson();
-        String jsonRecipes = gson.toJson(savedRecipes);
-        editor.putString("recipes", jsonRecipes);
-        editor.apply();
+        Gson gson = new Gson(); // Utworzenie nowego obiektu Gson
+        String jsonRecipes = gson.toJson(savedRecipes); // Konwersja listy zapisanych przepisów do formatu JSON
+        editor.putString("recipes", jsonRecipes); // Zapisanie ciągu JSON w SharedPreferences pod kluczem "recipes"
+        editor.apply(); // Zastosowanie wprowadzonych zmian
     }
 }
